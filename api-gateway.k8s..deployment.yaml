@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway
+  namespace: gateway
+  labels:
+    app: api-gateway
+data:
+  application.yml: |
+    spring:
+      application.name: api_gateway
+
+    jwt:
+      jwk-url: http://keycloak-internal.auth.svc.cluster.local:8080/realms/master/protocol/openid-connect/certs
+      issuer: http://keycloak-internal.auth.svc.cluster.local:8080/realms/master
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: dkds/payment-processing-platform-api-gateway:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: api-gateway
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  namespace: gateway
+spec:
+  type: NodePort
+  selector:
+    app: api-gateway
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080
