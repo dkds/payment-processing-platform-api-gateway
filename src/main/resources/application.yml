@@ -3,10 +3,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: service-a
+        - id: test-service
           uri: http://192.168.39.31:30082
           predicates:
-            - Path=/service-a/**
+            - Path=/api/test-service/**
           filters:
             - AuthFilter
 

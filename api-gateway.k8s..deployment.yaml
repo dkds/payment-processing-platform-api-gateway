@@ -8,8 +8,16 @@ metadata:
 data:
   application.yml: |
     spring:
-      application.name: api_gateway
-
+      application.name: api_gateway  
+      cloud:
+      gateway:
+        routes:
+          - id: test-service
+            uri: http://test-service.services.svc.cluster.local
+            predicates:
+              - Path=/api/test-service/**
+            filters:
+              - AuthFilter
     jwt:
       jwk-url: http://keycloak-internal.auth.svc.cluster.local:8080/realms/master/protocol/openid-connect/certs
       issuer: http://keycloak-internal.auth.svc.cluster.local:8080/realms/master
