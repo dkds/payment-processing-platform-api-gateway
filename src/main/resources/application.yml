@@ -13,3 +13,7 @@ spring:
 jwt:
   jwk-url: http://192.168.39.31:30085/realms/master/protocol/openid-connect/certs
   issuer: http://192.168.39.31:30085/realms/master
+
+logging:
+  level:
+    org.springframework.cloud.gateway.handler.RoutePredicateHandlerMapping: TRACE
